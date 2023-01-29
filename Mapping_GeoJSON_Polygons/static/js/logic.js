@@ -1,4 +1,3 @@
-
 // Adding console.log to check to see if the code is working
 console.log("Working.");
 
@@ -26,7 +25,7 @@ let baseMaps = {
 let map = L.map('mapid', {
     center: [43.7, -79.3],
     zoom: 11,
-    layer: [streets]
+    layers: [streets]
 });
 
 // Passing our map layers into our layers control and adding the layers control to the map
@@ -35,9 +34,21 @@ L.control.layers(baseMaps).addTo(map);
 // Accessing the Toronto neighborhoods GeoJSON URL
 let torontoHoods = 'https://raw.githubusercontent.com/RyanDevillier/Mapping_Earthquakes/Mapping_GeoJSON_Polygons/torontoNeighborhoods.json'
 
+// Creating the style attributes to pass into the GeoJSON layer
+let myStyle = {
+    color: '#4169E1',
+    fillColor: "#ffffa1",
+    weight: 1
+}
+
 // Grabbing the GeoJSON data
 d3.json(torontoHoods).then(function(data) {
   console.log(data);
   // Creating a GeoJSON layer with the retrieved data
-  L.geoJSON(data).addTo(map);
+  L.geoJSON(data, {
+    style: myStyle,
+    onEachFeature: function(feature, layer) {
+        layer.bindPopup("<h3> Neighborhood: " + feature.properties.AREA_NAME + "</h3>")
+    }
+  }).addTo(map);
 });
